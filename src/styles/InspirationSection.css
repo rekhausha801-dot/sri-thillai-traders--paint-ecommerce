@@ -1,0 +1,233 @@
+/* Inspiration Section - 3 Full-Image Cards with Before / After Hover Reveal */
+
+.inspiration-section {
+  padding: 10px 0 15px;
+  background-color: #FAFBFC;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.inspiration-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Header - Expanded to 1240px */
+.inspiration-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin: 0 auto 24px auto;
+  max-width: 1240px;
+  gap: 20px;
+}
+
+.inspiration-heading {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px 0;
+}
+
+.inspiration-description {
+  font-size: 0.98rem;
+  color: #0F172A;
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 650px;
+}
+
+.inspiration-subtext {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #6B7280;
+}
+
+/* 3 Cards Grid - Expanded to 1240px */
+.inspiration-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1240px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Full-Image Card Container - Luxury Glass Finish with Deep Plum Mauve Accent (#7B4564) */
+.inspiration-card.inspiration-card-full {
+  position: relative;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 20px;
+  border: 1.5px solid rgba(123, 69, 100, 0.35);
+  overflow: hidden;
+  box-shadow: 
+    0 10px 30px -6px rgba(123, 69, 100, 0.16),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  display: block;
+  height: 360px;
+  width: 100%;
+}
+
+.inspiration-card.inspiration-card-full:hover {
+  transform: translateY(-6px);
+  background: rgba(255, 255, 255, 0.68);
+  border-color: #7B4564;
+  box-shadow: 
+    0 18px 42px -8px rgba(123, 69, 100, 0.3),
+    0 0 0 1.5px rgba(123, 69, 100, 0.35) inset;
+}
+
+/* Image Media Container - matching ProductCard height */
+.inspiration-card-full .inspiration-card-media {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #7B4564;
+  cursor: pointer;
+}
+
+/* Before and After Image Transitions */
+.inspiration-card-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.5s ease, transform 0.6s ease;
+}
+
+.inspiration-card-before {
+  opacity: 1;
+  z-index: 1;
+  transform: scale(1);
+}
+
+.inspiration-card.is-hovered .inspiration-card-before {
+  opacity: 0;
+  transform: scale(1.06);
+}
+
+.inspiration-card-after {
+  opacity: 0;
+  z-index: 2;
+  transform: scale(1.03);
+}
+
+.inspiration-card.is-hovered .inspiration-card-after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Dynamic State Badge (Before / After) with Mauve Accent */
+.inspiration-state-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 4;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  transition: all 0.25s ease;
+  pointer-events: none;
+}
+
+.badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.badge-before {
+  background: rgba(15, 23, 42, 0.86);
+  color: #FFFFFF;
+}
+
+.badge-before .badge-dot {
+  background: #F59E0B;
+}
+
+.badge-after {
+  background: rgba(123, 69, 100, 0.94);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 14px rgba(123, 69, 100, 0.35);
+}
+
+.badge-after .badge-dot {
+  background: #F3E8F0;
+}
+
+/* Category Pill */
+.inspiration-category-pill {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 4;
+  padding: 5px 12px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #0F172A;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Bottom Hint inside Media */
+.inspiration-hover-hint {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  z-index: 4;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.68);
+  color: #F8FAFC;
+  font-size: 0.76rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  backdrop-filter: blur(6px);
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.inspiration-card.is-hovered .inspiration-hover-hint {
+  background: rgba(0, 86, 210, 0.9);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .inspiration-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .inspiration-grid {
+    grid-template-columns: 1fr;
+  }
+  .inspiration-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

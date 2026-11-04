@@ -1,0 +1,395 @@
+/* ==========================================================================
+   Search Modal / Overlay Styles
+   ========================================================================== */
+
+@keyframes searchModalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes searchModalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.search-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.58);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 99999;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 60px 16px 24px;
+  animation: searchModalFadeIn 0.2s ease-out;
+}
+
+.search-modal-container {
+  width: 100%;
+  max-width: 640px;
+  background: #FFFFFF;
+  border-radius: 20px;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 100px);
+  animation: searchModalSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Modal Header with Search Input */
+.search-modal-header {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #F1F5F9;
+  gap: 12px;
+  background: #FFFFFF;
+}
+
+.search-modal-search-icon {
+  color: #0284C7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.search-modal-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 1.05rem;
+  font-family: inherit;
+  color: #0F172A;
+  background: transparent;
+  padding: 4px 0;
+}
+
+.search-modal-input::placeholder {
+  color: #94A3B8;
+  font-weight: 400;
+}
+
+.search-modal-clear-btn {
+  background: #F1F5F9;
+  border: none;
+  color: #64748B;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.search-modal-clear-btn:hover {
+  background: #E2E8F0;
+  color: #0F172A;
+}
+
+.search-modal-close-btn {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  color: #475569;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.search-modal-close-btn:hover {
+  background: #F1F5F9;
+  color: #0F172A;
+  border-color: #CBD5E1;
+}
+
+.search-modal-esc-key {
+  font-size: 0.7rem;
+  background: #E2E8F0;
+  color: #64748B;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+/* Modal Body Content */
+.search-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.search-modal-section-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748B;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Trending & Tags */
+.search-modal-chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.search-modal-chip {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  color: #334155;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.search-modal-chip:hover {
+  background: #E0F2FE;
+  border-color: #BAE6FD;
+  color: #0369A1;
+  transform: translateY(-1px);
+}
+
+/* Product Results List */
+.search-modal-products-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.search-modal-product-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  background: #FFFFFF;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.search-modal-product-item:hover {
+  background: #F8FAFC;
+  border-color: #E2E8F0;
+  transform: translateX(2px);
+}
+
+.search-modal-product-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  flex-shrink: 0;
+}
+
+.search-modal-product-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.search-modal-product-name {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #0F172A;
+  margin: 0 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-modal-product-meta {
+  font-size: 0.78rem;
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.search-modal-product-brand {
+  font-weight: 600;
+  color: #0284C7;
+}
+
+.search-modal-product-price {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0F172A;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.search-modal-product-arrow {
+  color: #94A3B8;
+  margin-left: 6px;
+  flex-shrink: 0;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.search-modal-product-item:hover .search-modal-product-arrow {
+  color: #0284C7;
+  transform: translateX(3px);
+}
+
+/* Empty State */
+.search-modal-empty {
+  text-align: center;
+  padding: 32px 16px;
+  color: #64748B;
+}
+
+.search-modal-empty-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #F1F5F9;
+  color: #94A3B8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+}
+
+.search-modal-empty-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1E293B;
+  margin-bottom: 4px;
+}
+
+.search-modal-empty-desc {
+  font-size: 0.84rem;
+  color: #64748B;
+}
+
+/* Modal Footer */
+.search-modal-footer {
+  padding: 12px 20px;
+  background: #F8FAFC;
+  border-top: 1px solid #F1F5F9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.search-modal-count-text {
+  font-size: 0.82rem;
+  color: #64748B;
+}
+
+.search-modal-view-all-btn {
+  background: #0284C7;
+  color: #FFFFFF;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.search-modal-view-all-btn:hover {
+  background: #0369A1;
+}
+
+/* Navbar Search Trigger Pill Styles */
+.nav-desktop-search-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px 8px 16px;
+  border-radius: 9999px;
+  border: 1px solid #E2E8F0;
+  background: #F8FAFC;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  text-align: left;
+}
+
+.nav-desktop-search-trigger:hover {
+  background: #FFFFFF;
+  border-color: #0284C7;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.12);
+}
+
+.nav-desktop-search-trigger-text {
+  font-size: 0.85rem;
+  color: #94A3B8;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-desktop-search-trigger:hover .nav-desktop-search-trigger-text {
+  color: #64748B;
+}
+
+.nav-desktop-search-trigger-icon {
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  transition: color 0.15s ease;
+}
+
+.nav-desktop-search-trigger:hover .nav-desktop-search-trigger-icon {
+  color: #0284C7;
+}
+
+@media (max-width: 640px) {
+  .search-modal-backdrop {
+    padding: 16px;
+    align-items: center;
+  }
+
+  .search-modal-container {
+    max-height: 90vh;
+  }
+}
