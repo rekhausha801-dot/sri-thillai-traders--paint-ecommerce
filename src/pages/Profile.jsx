@@ -1,27 +1,24 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   User,
-  Package,
-  Heart,
   MapPin,
-  Lock,
+  Bell,
+  Headphones,
   LogOut,
   Edit2,
   Camera,
-  ChevronRight,
-  Headphones,
+  Mail,
+  Phone,
+  Calendar,
+  CheckCircle2,
   Check,
-  Eye,
-  EyeOff,
   Plus,
-  Trash2,
-  ShieldCheck
+  Trash2
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import profileAvatarSample from '../assets/profile-avatar-sample.png';
-import canRoyaleImg from '../assets/can-royal-luxury.png';
-import canDuluxImg from '../assets/can-dulux-weathershield.png';
+import avatarCircle from '../assets/profile-user-avatar-circle.png';
+import avatarMain from '../assets/profile-user-avatar-main.png';
 import '../styles/Profile.css';
 
 const Profile = () => {
@@ -33,24 +30,13 @@ const Profile = () => {
 
   // Profile Form state with default fallback matching user screenshot
   const [formData, setFormData] = useState({
-    name: user?.name || 'Rekha',
-    email: user?.email || 'rekha@gmail.com',
+    name: user?.name || 'Rekha Rekha',
+    email: user?.email || 'rekhausha801@gmail.com',
     phone: user?.phone || '+91 98765 43210',
     gender: 'Female',
-    memberSince: 'Nov 2026',
+    dob: '',
+    joinedDate: '9/2/2026',
   });
-
-  // Change Password Form State
-  const [passwordForm, setPasswordForm] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-  });
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [passwordSuccess, setPasswordSuccess] = useState('');
-  const [passwordError, setPasswordError] = useState('');
 
   // My Addresses State
   const [addresses, setAddresses] = useState([
@@ -58,7 +44,7 @@ const Profile = () => {
       id: 1,
       type: 'Home',
       isDefault: true,
-      name: 'Rekha',
+      name: 'Rekha Rekha',
       phone: '+91 98765 43210',
       addressLine: '24, Thillai Traders, A.R.D.C. First Floor, Sengunthapuram, Main Road',
       city: 'Puducherry',
@@ -78,7 +64,6 @@ const Profile = () => {
     }
   ]);
   const [isAddingAddress, setIsAddingAddress] = useState(false);
-  const [editingAddressId, setEditingAddressId] = useState(null);
   const [addressFormData, setAddressFormData] = useState({
     type: 'Home',
     name: '',
@@ -100,51 +85,22 @@ const Profile = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSaveProfile = (e) => {
+  const handleProfileSubmit = (e) => {
     e.preventDefault();
     setIsEditing(false);
   };
 
-  // Password submission handler
-  const handlePasswordSubmit = (e) => {
+  const handleAddAddressSubmit = (e) => {
     e.preventDefault();
-    setPasswordError('');
-    setPasswordSuccess('');
-
-    if (passwordForm.newPassword.length < 6) {
-      setPasswordError('New password must be at least 6 characters long.');
-      return;
-    }
-    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      setPasswordError('New passwords do not match!');
-      return;
-    }
-
-    // Success simulation
-    setPasswordSuccess('Password updated successfully!');
-    setPasswordForm({
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: '',
-    });
-    setTimeout(() => setPasswordSuccess(''), 4000);
-  };
-
-  // Address submission handler
-  const handleAddressSubmit = (e) => {
-    e.preventDefault();
-    if (editingAddressId) {
-      setAddresses(prev => prev.map(addr => addr.id === editingAddressId ? { ...addressFormData, id: editingAddressId } : addr));
+    const newAddr = {
+      id: Date.now(),
+      ...addressFormData,
+    };
+    if (newAddr.isDefault) {
+      setAddresses(addresses.map(a => ({ ...a, isDefault: false })).concat(newAddr));
     } else {
-      const newAddr = {
-        ...addressFormData,
-        id: Date.now(),
-        isDefault: addresses.length === 0 ? true : addressFormData.isDefault
-      };
-      setAddresses(prev => [newAddr, ...prev]);
+      setAddresses([...addresses, newAddr]);
     }
-    setIsAddingAddress(false);
-    setEditingAddressId(null);
     setAddressFormData({
       type: 'Home',
       name: '',
@@ -155,571 +111,276 @@ const Profile = () => {
       pincode: '',
       isDefault: false,
     });
+    setIsAddingAddress(false);
   };
 
   const handleDeleteAddress = (id) => {
-    setAddresses(prev => prev.filter(a => a.id !== id));
+    setAddresses(addresses.filter(a => a.id !== id));
+  };
+
+  const handleSetDefaultAddress = (id) => {
+    setAddresses(addresses.map(a => ({ ...a, isDefault: a.id === id })));
   };
 
   return (
-    <div className="profile-page-wrapper">
-      
-      {/* 2. MAIN GRID CONTAINER: SIDEBAR + CONTENT */}
-      <div className="profile-main-container">
-        
-        {/* ================= LEFT SIDEBAR ================= */}
-        <aside className="profile-sidebar">
-          {/* User Brief Card */}
-          <div className="profile-sidebar-user">
-            <div className="profile-sidebar-avatar-wrap">
+    <div className="new-profile-page-wrapper">
+      <div className="new-profile-layout-container">
+        {/* ============================================================
+            LEFT SIDEBAR
+            ============================================================ */}
+        <aside className="new-profile-sidebar">
+          {/* User Identity Section */}
+          <div className="new-profile-user-section">
+            <div className="new-profile-avatar-circle-wrap">
               <img
-                src={profileAvatarSample}
+                src={avatarCircle}
                 alt={formData.name}
-                className="profile-sidebar-avatar-img"
+                className="new-profile-avatar-img"
               />
-              <button 
-                type="button" 
-                className="profile-avatar-edit-badge"
-                title="Change Avatar"
-                onClick={() => {
-                  setActiveTab('profile');
-                  setIsEditing(true);
-                }}
-              >
-                <Edit2 size={13} />
-              </button>
             </div>
-            <h3 className="profile-sidebar-name">{formData.name}</h3>
-            <p className="profile-sidebar-email">{formData.email}</p>
+            <h3 className="new-profile-user-name">{formData.name}</h3>
+            <p className="new-profile-user-email">{formData.email}</p>
           </div>
 
-          {/* Navigation Items */}
-          <nav className="profile-sidebar-nav">
+          {/* Navigation List */}
+          <nav className="new-profile-nav-list">
             <button
               type="button"
-              className={`profile-nav-item ${activeTab === 'profile' ? 'active' : ''}`}
-              onClick={() => setActiveTab('profile')}
+              className={`new-profile-nav-btn ${activeTab === 'profile' ? 'active' : ''}`}
+              onClick={() => { setActiveTab('profile'); setIsEditing(false); }}
             >
-              <User size={18} />
+              <User size={19} />
               <span>My Profile</span>
             </button>
 
-            <Link
-              to="/checkout"
-              className={`profile-nav-item ${activeTab === 'orders' ? 'active' : ''}`}
-            >
-              <Package size={18} />
-              <span>My Orders</span>
-            </Link>
-
-            <Link
-              to="/wishlist"
-              className={`profile-nav-item ${activeTab === 'wishlist' ? 'active' : ''}`}
-            >
-              <Heart size={18} />
-              <span>My Wishlist</span>
-            </Link>
-
             <button
               type="button"
-              className={`profile-nav-item ${activeTab === 'addresses' ? 'active' : ''}`}
+              className={`new-profile-nav-btn ${activeTab === 'addresses' ? 'active' : ''}`}
               onClick={() => setActiveTab('addresses')}
             >
-              <MapPin size={18} />
+              <MapPin size={19} />
               <span>My Addresses</span>
             </button>
 
             <button
               type="button"
-              className={`profile-nav-item ${activeTab === 'password' ? 'active' : ''}`}
-              onClick={() => setActiveTab('password')}
+              className={`new-profile-nav-btn ${activeTab === 'notifications' ? 'active' : ''}`}
+              onClick={() => setActiveTab('notifications')}
             >
-              <Lock size={18} />
-              <span>Change Password</span>
+              <Bell size={19} />
+              <span>Notifications</span>
             </button>
 
             <button
               type="button"
-              className="profile-nav-item logout-item"
-              onClick={handleLogout}
+              className={`new-profile-nav-btn ${activeTab === 'help' ? 'active' : ''}`}
+              onClick={() => setActiveTab('help')}
             >
-              <LogOut size={18} />
-              <span>Logout</span>
+              <Headphones size={19} />
+              <span>Help Center</span>
             </button>
           </nav>
 
-          {/* Bottom Card: "Bring Colour to Your World" */}
-          <div className="profile-sidebar-promo-card">
-            <h4 className="profile-promo-title">
-              Bring Colour <br /> to Your World
-            </h4>
-            <Link to="/products" className="profile-promo-btn">
-              <span>Explore Products</span>
-              <ChevronRight size={13} />
-            </Link>
-          </div>
+          {/* Logout Button */}
+          <button
+            type="button"
+            className="new-profile-logout-btn"
+            onClick={handleLogout}
+          >
+            <LogOut size={18} />
+            <span>Logout</span>
+          </button>
         </aside>
 
-        {/* ================= RIGHT MAIN PANELS ================= */}
-        <main className="profile-content-area">
-          
-          {/* TAB 1: MY PROFILE */}
+        {/* ============================================================
+            RIGHT MAIN CARD
+            ============================================================ */}
+        <main className="new-profile-main-card">
           {activeTab === 'profile' && (
             <>
-              {/* PROFILE INFORMATION MAIN CARD */}
-              <div className="profile-info-card">
-                <div className="profile-card-header">
-                  <div className="profile-ribbon-badge">
-                    <User size={20} />
-                    <span>Profile Information</span>
+              <h2 className="new-profile-card-title">My Profile</h2>
+              <p className="new-profile-card-subtitle">
+                Manage your personal information and account details.
+              </p>
+
+              {/* Inner Information Box (Matching User Reference Image) */}
+              <div className="new-profile-inner-box">
+                <div className="new-profile-inner-left">
+                  {/* Big Circular Avatar with Camera Pill */}
+                  <div className="new-profile-big-avatar-wrap">
+                    <img
+                      src={avatarMain}
+                      alt={formData.name}
+                      className="new-profile-big-avatar-img"
+                    />
+                    <label className="new-profile-cam-pill" title="Upload new photo">
+                      <Camera size={16} />
+                      <input type="file" accept="image/*" style={{ display: 'none' }} />
+                    </label>
                   </div>
 
-                  <button
-                    type="button"
-                    className="profile-edit-btn"
-                    onClick={() => setIsEditing(!isEditing)}
-                  >
-                    <Edit2 size={15} />
-                    <span>{isEditing ? 'Cancel' : 'Edit Profile'}</span>
-                  </button>
+                  {/* Details Column */}
+                  <div className="new-profile-details-column">
+                    <div className="new-profile-name-row">
+                      <h3 className="new-profile-display-name">{formData.name}</h3>
+                      <span className="new-profile-verified-badge">
+                        <CheckCircle2 size={13} />
+                        Verified
+                      </span>
+                    </div>
+
+                    <div className="new-profile-info-row-item">
+                      <Mail size={16} />
+                      <span>{formData.email}</span>
+                    </div>
+
+                    <div className="new-profile-info-row-item">
+                      <Phone size={16} />
+                      <span>{formData.phone}</span>
+                    </div>
+
+                    <div className="new-profile-info-row-item">
+                      <Calendar size={16} />
+                      {formData.dob ? (
+                        <span>DOB: {formData.dob}</span>
+                      ) : (
+                        <button
+                          type="button"
+                          className="new-profile-dob-link"
+                          onClick={() => setIsEditing(true)}
+                          style={{ background: 'none', border: 'none', padding: 0, font: 'inherit' }}
+                        >
+                          + Add Date of Birth
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="new-profile-info-row-item">
+                      <User size={16} />
+                      <span>Gender: {formData.gender}</span>
+                    </div>
+
+                    <div className="new-profile-info-row-item">
+                      <Calendar size={16} />
+                      <span>Joined on {formData.joinedDate}</span>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="profile-card-body">
-                  {/* Avatar Section */}
-                  <div className="profile-main-avatar-column">
-                    <div className="profile-main-avatar-frame">
-                      <img
-                        src={profileAvatarSample}
-                        alt={formData.name}
-                      />
-                      <button 
-                        type="button" 
-                        className="profile-cam-btn" 
-                        title="Upload New Photo"
+                {/* Edit Profile Button on Right */}
+                <button
+                  type="button"
+                  className="new-profile-edit-btn-action"
+                  onClick={() => setIsEditing(!isEditing)}
+                >
+                  <Edit2 size={16} />
+                  <span>{isEditing ? 'Cancel' : 'Edit Profile'}</span>
+                </button>
+              </div>
+
+              {/* Edit Mode Inline Form */}
+              {isEditing && (
+                <div className="new-profile-edit-form-wrap">
+                  <form onSubmit={handleProfileSubmit}>
+                    <div className="new-profile-form-grid">
+                      <div className="new-profile-form-group">
+                        <label className="new-profile-form-label">Full Name</label>
+                        <input
+                          type="text"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          className="new-profile-form-input"
+                          required
+                        />
+                      </div>
+
+                      <div className="new-profile-form-group">
+                        <label className="new-profile-form-label">Email Address</label>
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          className="new-profile-form-input"
+                          required
+                        />
+                      </div>
+
+                      <div className="new-profile-form-group">
+                        <label className="new-profile-form-label">Phone Number</label>
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          className="new-profile-form-input"
+                          required
+                        />
+                      </div>
+
+                      <div className="new-profile-form-group">
+                        <label className="new-profile-form-label">Gender</label>
+                        <select
+                          name="gender"
+                          value={formData.gender}
+                          onChange={handleInputChange}
+                          className="new-profile-form-input"
+                        >
+                          <option value="Female">Female</option>
+                          <option value="Male">Male</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+
+                      <div className="new-profile-form-group">
+                        <label className="new-profile-form-label">Date of Birth</label>
+                        <input
+                          type="date"
+                          name="dob"
+                          value={formData.dob}
+                          onChange={handleInputChange}
+                          className="new-profile-form-input"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="new-profile-form-actions">
+                      <button type="submit" className="new-profile-save-submit-btn">
+                        <Check size={16} />
+                        <span>Save Changes</span>
+                      </button>
+                      <button
+                        type="button"
+                        className="new-profile-cancel-edit-btn"
+                        onClick={() => setIsEditing(false)}
                       >
-                        <Camera size={15} />
+                        Cancel
                       </button>
                     </div>
-                    <button 
-                      type="button" 
-                      className="profile-change-photo-btn"
-                      onClick={() => alert('Photo upload dialog')}
-                    >
-                      Change Photo
-                    </button>
-                  </div>
-
-                  {/* Data Table / Edit Form */}
-                  <div className="profile-details-table">
-                    {isEditing ? (
-                      <form onSubmit={handleSaveProfile} style={{ display: 'flex', flexDirection: 'column' }}>
-                        <div className="profile-form-group">
-                          <label className="profile-form-label">
-                            Full Name
-                          </label>
-                          <input
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleInputChange}
-                            className="profile-form-input"
-                            required
-                          />
-                        </div>
-
-                        <div className="profile-form-group">
-                          <label className="profile-form-label">
-                            Email Address
-                          </label>
-                          <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            className="profile-form-input"
-                            required
-                          />
-                        </div>
-
-                        <div className="profile-form-group">
-                          <label className="profile-form-label">
-                            Phone Number
-                          </label>
-                          <input
-                            type="text"
-                            name="phone"
-                            value={formData.phone}
-                            onChange={handleInputChange}
-                            className="profile-form-input"
-                          />
-                        </div>
-
-                        <div className="profile-form-group">
-                          <label className="profile-form-label">
-                            Gender
-                          </label>
-                          <select
-                            name="gender"
-                            value={formData.gender}
-                            onChange={handleInputChange}
-                            className="profile-form-select"
-                          >
-                            <option value="Female">Female</option>
-                            <option value="Male">Male</option>
-                            <option value="Other">Other</option>
-                          </select>
-                        </div>
-
-                        <div className="profile-form-actions">
-                          <button
-                            type="submit"
-                            className="profile-save-btn"
-                          >
-                            <Check size={18} strokeWidth={2.5} />
-                            <span>Save Changes</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setIsEditing(false)}
-                            className="profile-cancel-btn"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </form>
-                    ) : (
-                      <>
-                        <div className="profile-info-row">
-                          <span className="profile-info-label">Name</span>
-                          <span className="profile-info-colon">:</span>
-                          <span className="profile-info-val">{formData.name}</span>
-                        </div>
-
-                        <div className="profile-info-row">
-                          <span className="profile-info-label">Email Address</span>
-                          <span className="profile-info-colon">:</span>
-                          <span className="profile-info-val">{formData.email}</span>
-                        </div>
-
-                        <div className="profile-info-row">
-                          <span className="profile-info-label">Phone Number</span>
-                          <span className="profile-info-colon">:</span>
-                          <span className="profile-info-val">{formData.phone}</span>
-                        </div>
-
-                        <div className="profile-info-row">
-                          <span className="profile-info-label">Gender</span>
-                          <span className="profile-info-colon">:</span>
-                          <span className="profile-info-val">{formData.gender}</span>
-                        </div>
-
-                        <div className="profile-info-row">
-                          <span className="profile-info-label">Member Since</span>
-                          <span className="profile-info-colon">:</span>
-                          <span className="profile-info-val">{formData.memberSince}</span>
-                        </div>
-                      </>
-                    )}
-                  </div>
+                  </form>
                 </div>
-              </div>
-
-              {/* TWO COLUMNS: MY ORDERS & MY WISHLIST */}
-              <div className="profile-two-col-grid">
-                
-                {/* Orders Tile */}
-                <div className="profile-quick-card">
-                  <div className="profile-quick-card-header">
-                    <h3 className="profile-quick-card-title">
-                      <Package size={18} />
-                      <span>My Orders</span>
-                    </h3>
-                    <Link to="/checkout" className="profile-view-all-link">
-                      <span>View All</span>
-                      <ChevronRight size={14} />
-                    </Link>
-                  </div>
-
-                  <div className="profile-quick-card-body">
-                    <div className="profile-item-tile">
-                      <img
-                        src={canRoyaleImg}
-                        alt="Royale Luxury Emulsion"
-                        className="profile-item-can-img"
-                      />
-                      <div className="profile-item-info">
-                        <h4 className="profile-item-name">Royale Luxury Emulsion</h4>
-                        <p className="profile-item-price">₹2,499</p>
-                        <span className="profile-delivered-pill">Delivered</span>
-                        <p className="profile-item-meta">Order #STT1026 • Placed on Nov 02, 2026</p>
-                      </div>
-                      <Link to="/checkout" className="profile-arrow-circle-btn">
-                        <ChevronRight size={18} />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Wishlist Tile */}
-                <div className="profile-quick-card">
-                  <div className="profile-quick-card-header">
-                    <h3 className="profile-quick-card-title">
-                      <Heart size={18} fill="#FFFFFF" />
-                      <span>My Wishlist</span>
-                    </h3>
-                    <Link to="/wishlist" className="profile-view-all-link">
-                      <span>View All</span>
-                      <ChevronRight size={14} />
-                    </Link>
-                  </div>
-
-                  <div className="profile-quick-card-body">
-                    <div className="profile-item-tile">
-                      <img
-                        src={canDuluxImg}
-                        alt="Dulux WeatherShield"
-                        className="profile-item-can-img"
-                      />
-                      <div className="profile-item-info">
-                        <h4 className="profile-item-name">Dulux WeatherShield</h4>
-                        <p className="profile-item-price">₹3,199</p>
-                      </div>
-                      <button type="button" className="profile-heart-btn" title="Saved Item">
-                        <Heart size={18} fill="#EF4444" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
-              {/* THREE ACTION PILLS (Manage Addresses, Change Password, Need Help) */}
-              <div className="profile-three-action-grid">
-                
-                <div 
-                  className="profile-action-pill-card"
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => setActiveTab('addresses')}
-                >
-                  <div className="profile-action-pill-left">
-                    <div className="profile-pill-icon-wrap">
-                      <MapPin size={22} />
-                    </div>
-                    <div className="profile-pill-texts">
-                      <h4>Manage Addresses</h4>
-                      <p>View & update shipping</p>
-                    </div>
-                  </div>
-                  <div className="profile-pill-arrow">
-                    <ChevronRight size={18} />
-                  </div>
-                </div>
-
-                <div 
-                  className="profile-action-pill-card"
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => setActiveTab('password')}
-                >
-                  <div className="profile-action-pill-left">
-                    <div className="profile-pill-icon-wrap">
-                      <Lock size={22} />
-                    </div>
-                    <div className="profile-pill-texts">
-                      <h4>Change Password</h4>
-                      <p>Security & credentials</p>
-                    </div>
-                  </div>
-                  <div className="profile-pill-arrow">
-                    <ChevronRight size={18} />
-                  </div>
-                </div>
-
-                <Link to="/contact" className="profile-action-pill-card">
-                  <div className="profile-action-pill-left">
-                    <div className="profile-pill-icon-wrap">
-                      <Headphones size={22} />
-                    </div>
-                    <div className="profile-pill-texts">
-                      <h4>Need Help?</h4>
-                      <p>Contact Us 24/7</p>
-                    </div>
-                  </div>
-                  <div className="profile-pill-arrow">
-                    <ChevronRight size={18} />
-                  </div>
-                </Link>
-
-              </div>
+              )}
             </>
           )}
 
-          {/* TAB 2: CHANGE PASSWORD */}
-          {activeTab === 'password' && (
-            <div className="profile-info-card profile-tab-full-height">
-              <div className="profile-card-header">
-                <div className="profile-ribbon-badge">
-                  <Lock size={20} />
-                  <span>Change Password</span>
-                </div>
-              </div>
-
-              <div className="profile-card-body-wrapper" style={{ padding: '36px 40px' }}>
-                <p style={{ color: '#64748B', fontSize: '0.95rem', margin: '0 0 24px 0', lineHeight: 1.6 }}>
-                  Ensure your account is using a long, random password to stay secure. Your password should be at least 6 characters.
-                </p>
-
-                {passwordSuccess && (
-                  <div style={{ background: '#DCFCE7', border: '1px solid #86EFAC', color: '#166534', padding: '12px 18px', borderRadius: '12px', marginBottom: '20px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <ShieldCheck size={18} />
-                    <span>{passwordSuccess}</span>
-                  </div>
-                )}
-
-                {passwordError && (
-                  <div style={{ background: '#FEE2E2', border: '1px solid #FCA5A5', color: '#991B1B', padding: '12px 18px', borderRadius: '12px', marginBottom: '20px', fontWeight: 600 }}>
-                    {passwordError}
-                  </div>
-                )}
-
-                <form onSubmit={handlePasswordSubmit} style={{ maxWidth: '520px', display: 'flex', flexDirection: 'column', gap: '18px' }}>
-                  {/* Current Password */}
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: 700, color: '#1E293B', marginBottom: '6px' }}>
-                      Current Password
-                    </label>
-                    <div style={{ position: 'relative' }}>
-                      <input
-                        type={showCurrentPassword ? 'text' : 'password'}
-                        value={passwordForm.currentPassword}
-                        onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
-                        placeholder="Enter current password"
-                        style={{ width: '100%', padding: '12px 42px 12px 16px', borderRadius: '12px', border: '1.5px solid #CBD5E1', fontSize: '0.95rem', outline: 'none' }}
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                        style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', cursor: 'pointer', color: '#64748B' }}
-                      >
-                        {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* New Password */}
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: 700, color: '#1E293B', marginBottom: '6px' }}>
-                      New Password
-                    </label>
-                    <div style={{ position: 'relative' }}>
-                      <input
-                        type={showNewPassword ? 'text' : 'password'}
-                        value={passwordForm.newPassword}
-                        onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-                        placeholder="Enter at least 6 characters"
-                        style={{ width: '100%', padding: '12px 42px 12px 16px', borderRadius: '12px', border: '1.5px solid #CBD5E1', fontSize: '0.95rem', outline: 'none' }}
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowNewPassword(!showNewPassword)}
-                        style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', cursor: 'pointer', color: '#64748B' }}
-                      >
-                        {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Confirm New Password */}
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: 700, color: '#1E293B', marginBottom: '6px' }}>
-                      Confirm New Password
-                    </label>
-                    <div style={{ position: 'relative' }}>
-                      <input
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        value={passwordForm.confirmPassword}
-                        onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
-                        placeholder="Re-type your new password"
-                        style={{ width: '100%', padding: '12px 42px 12px 16px', borderRadius: '12px', border: '1.5px solid #CBD5E1', fontSize: '0.95rem', outline: 'none' }}
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', cursor: 'pointer', color: '#64748B' }}
-                      >
-                        {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Buttons */}
-                  <div style={{ display: 'flex', gap: '14px', marginTop: '12px' }}>
-                    <button
-                      type="submit"
-                      style={{
-                        background: 'linear-gradient(90deg, #051A36 0%, #03132B 100%)',
-                        color: '#FFFFFF',
-                        border: 'none',
-                        padding: '12px 28px',
-                        borderRadius: '30px',
-                        fontWeight: 700,
-                        fontSize: '0.98rem',
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 14px rgba(5, 26, 54, 0.25)',
-                      }}
-                    >
-                      Update Password
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setActiveTab('profile')}
-                      style={{
-                        background: '#F1F5F9',
-                        color: '#475569',
-                        border: 'none',
-                        padding: '12px 22px',
-                        borderRadius: '30px',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                      }}
-                    >
-                      Back to Profile
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
-
-          {/* TAB 3: MY ADDRESSES */}
+          {/* ============================================================
+              MY ADDRESSES TAB
+              ============================================================ */}
           {activeTab === 'addresses' && (
-            <div className="profile-info-card profile-tab-full-height">
-              <div className="profile-card-header">
-                <div className="profile-ribbon-badge">
-                  <MapPin size={20} />
-                  <span>My Delivery Addresses</span>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                <div>
+                  <h2 className="new-profile-card-title">My Addresses</h2>
+                  <p className="new-profile-card-subtitle" style={{ margin: 0 }}>
+                    Manage your delivery addresses for seamless paint & supplies shipping.
+                  </p>
                 </div>
-
                 {!isAddingAddress && (
                   <button
                     type="button"
-                    className="profile-edit-btn"
-                    onClick={() => {
-                      setEditingAddressId(null);
-                      setAddressFormData({
-                        type: 'Home',
-                        name: formData.name,
-                        phone: formData.phone,
-                        addressLine: '',
-                        city: 'Puducherry',
-                        state: 'Puducherry',
-                        pincode: '605001',
-                        isDefault: false,
-                      });
-                      setIsAddingAddress(true);
-                    }}
+                    className="new-profile-edit-btn-action"
+                    onClick={() => setIsAddingAddress(true)}
                   >
                     <Plus size={16} />
                     <span>Add New Address</span>
@@ -727,189 +388,238 @@ const Profile = () => {
                 )}
               </div>
 
-              <div style={{ padding: '32px 36px' }}>
-                {isAddingAddress ? (
-                  <form onSubmit={handleAddressSubmit} style={{ maxWidth: '600px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#0F172A', margin: '0 0 8px' }}>
-                      {editingAddressId ? 'Edit Address' : 'Add New Delivery Address'}
-                    </h3>
+              {isAddingAddress ? (
+                <div className="new-profile-inner-box" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: '0 0 16px', color: '#0F172A' }}>
+                    Add New Address
+                  </h3>
+                  <form onSubmit={handleAddAddressSubmit}>
+                    <div className="new-profile-form-grid">
+                      <div className="new-profile-form-group">
+                        <label className="new-profile-form-label">Address Type</label>
+                        <select
+                          className="new-profile-form-input"
+                          value={addressFormData.type}
+                          onChange={(e) => setAddressFormData({ ...addressFormData, type: e.target.value })}
+                        >
+                          <option value="Home">Home</option>
+                          <option value="Work / Site">Work / Site</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#475569', marginBottom: '4px' }}>Contact Name</label>
+                      <div className="new-profile-form-group">
+                        <label className="new-profile-form-label">Contact Person Name</label>
                         <input
                           type="text"
+                          className="new-profile-form-input"
                           value={addressFormData.name}
                           onChange={(e) => setAddressFormData({ ...addressFormData, name: e.target.value })}
-                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #CBD5E1' }}
                           required
                         />
                       </div>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#475569', marginBottom: '4px' }}>Phone Number</label>
+
+                      <div className="new-profile-form-group">
+                        <label className="new-profile-form-label">Phone Number</label>
                         <input
-                          type="text"
+                          type="tel"
+                          className="new-profile-form-input"
                           value={addressFormData.phone}
                           onChange={(e) => setAddressFormData({ ...addressFormData, phone: e.target.value })}
-                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #CBD5E1' }}
                           required
                         />
                       </div>
-                    </div>
 
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#475569', marginBottom: '4px' }}>Street / Door No / Area</label>
-                      <input
-                        type="text"
-                        value={addressFormData.addressLine}
-                        onChange={(e) => setAddressFormData({ ...addressFormData, addressLine: e.target.value })}
-                        style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #CBD5E1' }}
-                        required
-                      />
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '14px' }}>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#475569', marginBottom: '4px' }}>City</label>
+                      <div className="new-profile-form-group" style={{ gridColumn: 'span 2' }}>
+                        <label className="new-profile-form-label">Street Address / Landmark</label>
                         <input
                           type="text"
+                          className="new-profile-form-input"
+                          value={addressFormData.addressLine}
+                          onChange={(e) => setAddressFormData({ ...addressFormData, addressLine: e.target.value })}
+                          required
+                        />
+                      </div>
+
+                      <div className="new-profile-form-group">
+                        <label className="new-profile-form-label">City</label>
+                        <input
+                          type="text"
+                          className="new-profile-form-input"
                           value={addressFormData.city}
                           onChange={(e) => setAddressFormData({ ...addressFormData, city: e.target.value })}
-                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #CBD5E1' }}
                           required
                         />
                       </div>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#475569', marginBottom: '4px' }}>State</label>
+
+                      <div className="new-profile-form-group">
+                        <label className="new-profile-form-label">Pincode</label>
                         <input
                           type="text"
-                          value={addressFormData.state}
-                          onChange={(e) => setAddressFormData({ ...addressFormData, state: e.target.value })}
-                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #CBD5E1' }}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#475569', marginBottom: '4px' }}>Pincode</label>
-                        <input
-                          type="text"
+                          className="new-profile-form-input"
                           value={addressFormData.pincode}
                           onChange={(e) => setAddressFormData({ ...addressFormData, pincode: e.target.value })}
-                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #CBD5E1' }}
                           required
                         />
                       </div>
                     </div>
 
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#475569', marginBottom: '4px' }}>Address Type</label>
-                      <select
-                        value={addressFormData.type}
-                        onChange={(e) => setAddressFormData({ ...addressFormData, type: e.target.value })}
-                        style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #CBD5E1', background: '#FFFFFF' }}
-                      >
-                        <option value="Home">Home (All day delivery)</option>
-                        <option value="Work / Site">Work / Painting Site (9 AM - 6 PM)</option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
-
-                    <div style={{ display: 'flex', gap: '12px', marginTop: '10px' }}>
-                      <button
-                        type="submit"
-                        style={{
-                          background: '#051A36',
-                          color: '#FFFFFF',
-                          border: 'none',
-                          padding: '12px 28px',
-                          borderRadius: '30px',
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                        }}
-                      >
-                        {editingAddressId ? 'Update Address' : 'Save Address'}
+                    <div className="new-profile-form-actions">
+                      <button type="submit" className="new-profile-save-submit-btn">
+                        Save Address
                       </button>
                       <button
                         type="button"
+                        className="new-profile-cancel-edit-btn"
                         onClick={() => setIsAddingAddress(false)}
-                        style={{
-                          background: '#F1F5F9',
-                          color: '#475569',
-                          border: 'none',
-                          padding: '12px 22px',
-                          borderRadius: '30px',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                        }}
                       >
                         Cancel
                       </button>
                     </div>
                   </form>
-                ) : (
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
-                    {addresses.map((addr) => (
-                      <div
-                        key={addr.id}
-                        style={{
-                          background: '#FAFAFA',
-                          border: addr.isDefault ? '2px solid #DDB35A' : '1px solid #E2E8F0',
-                          borderRadius: '18px',
-                          padding: '20px',
-                          position: 'relative',
-                          boxShadow: '0 4px 12px rgba(0,0,0,0.04)',
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-                          <span style={{ background: '#051A36', color: '#F8D279', fontSize: '0.75rem', fontWeight: 700, padding: '3px 10px', borderRadius: '12px' }}>
-                            {addr.type}
-                          </span>
-                          {addr.isDefault && (
-                            <span style={{ color: '#166534', background: '#DCFCE7', fontSize: '0.72rem', fontWeight: 700, padding: '3px 8px', borderRadius: '10px' }}>
-                              Default
-                            </span>
-                          )}
-                        </div>
-
-                        <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0F172A', margin: '0 0 4px' }}>{addr.name}</h4>
-                        <p style={{ fontSize: '0.88rem', color: '#64748B', margin: '0 0 10px' }}>{addr.phone}</p>
-                        <p style={{ fontSize: '0.9rem', color: '#334155', lineHeight: 1.5, margin: '0 0 16px' }}>
-                          {addr.addressLine}, {addr.city}, {addr.state} - {addr.pincode}
-                        </p>
-
-                        <div style={{ display: 'flex', gap: '10px', borderTop: '1px solid #E2E8F0', paddingTop: '12px' }}>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setAddressFormData(addr);
-                              setEditingAddressId(addr.id);
-                              setIsAddingAddress(true);
+                </div>
+              ) : (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+                  {addresses.map((addr) => (
+                    <div
+                      key={addr.id}
+                      style={{
+                        background: '#FCFAF6',
+                        border: addr.isDefault ? '2px solid #C89953' : '1.5px solid #F1ECE1',
+                        borderRadius: '16px',
+                        padding: '24px',
+                        position: 'relative',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                          <span
+                            style={{
+                              background: addr.isDefault ? '#C89953' : '#E2E8F0',
+                              color: addr.isDefault ? '#FFFFFF' : '#475569',
+                              fontSize: '0.78rem',
+                              fontWeight: 700,
+                              padding: '3px 10px',
+                              borderRadius: '20px',
                             }}
-                            style={{ background: 'transparent', border: 'none', color: '#2563EB', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
                           >
-                            <Edit2 size={13} />
-                            Edit
-                          </button>
+                            {addr.type} {addr.isDefault && '• Default'}
+                          </span>
                           <button
                             type="button"
                             onClick={() => handleDeleteAddress(addr.id)}
-                            style={{ background: 'transparent', border: 'none', color: '#EF4444', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                            style={{ background: 'transparent', border: 'none', color: '#EF4444', cursor: 'pointer' }}
+                            title="Delete"
                           >
-                            <Trash2 size={13} />
-                            Remove
+                            <Trash2 size={16} />
                           </button>
                         </div>
+
+                        <h4 style={{ margin: '0 0 6px', fontSize: '1.05rem', color: '#0F172A', fontWeight: 700 }}>
+                          {addr.name}
+                        </h4>
+                        <p style={{ margin: '0 0 4px', fontSize: '0.9rem', color: '#64748B' }}>
+                          {addr.phone}
+                        </p>
+                        <p style={{ margin: 0, fontSize: '0.9rem', color: '#334155', lineHeight: 1.5 }}>
+                          {addr.addressLine}, {addr.city}, {addr.state} - {addr.pincode}
+                        </p>
                       </div>
-                    ))}
+
+                      {!addr.isDefault && (
+                        <button
+                          type="button"
+                          onClick={() => handleSetDefaultAddress(addr.id)}
+                          style={{
+                            marginTop: '16px',
+                            background: '#FFFFFF',
+                            border: '1.5px solid #CBD5E1',
+                            padding: '6px 14px',
+                            borderRadius: '8px',
+                            fontSize: '0.82rem',
+                            fontWeight: 600,
+                            color: '#334155',
+                            cursor: 'pointer',
+                            alignSelf: 'flex-start',
+                          }}
+                        >
+                          Set as Default
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ============================================================
+              NOTIFICATIONS TAB
+              ============================================================ */}
+          {activeTab === 'notifications' && (
+            <div>
+              <h2 className="new-profile-card-title">Notifications</h2>
+              <p className="new-profile-card-subtitle">
+                Stay updated with your paint orders, delivery status, and exclusive offers.
+              </p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <div style={{ background: '#FCFAF6', border: '1.5px solid #F1ECE1', borderRadius: '14px', padding: '18px 22px', display: 'flex', gap: '16px', alignItems: 'center' }}>
+                  <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: '#FEF3C7', color: '#D97706', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Bell size={20} />
                   </div>
-                )}
+                  <div>
+                    <h4 style={{ margin: '0 0 4px', fontSize: '0.98rem', fontWeight: 700, color: '#0F172A' }}>Welcome to Sri Thillai Traders!</h4>
+                    <p style={{ margin: 0, fontSize: '0.85rem', color: '#64748B' }}>Your account was successfully registered and verified.</p>
+                  </div>
+                </div>
+
+                <div style={{ background: '#FCFAF6', border: '1.5px solid #F1ECE1', borderRadius: '14px', padding: '18px 22px', display: 'flex', gap: '16px', alignItems: 'center' }}>
+                  <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: '#DCFCE7', color: '#16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Check size={20} />
+                  </div>
+                  <div>
+                    <h4 style={{ margin: '0 0 4px', fontSize: '0.98rem', fontWeight: 700, color: '#0F172A' }}>Special Festive Paint Discount</h4>
+                    <p style={{ margin: 0, fontSize: '0.85rem', color: '#64748B' }}>Get up to 20% off on all premium exterior & interior emulsions this week!</p>
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
+          {/* ============================================================
+              HELP CENTER TAB
+              ============================================================ */}
+          {activeTab === 'help' && (
+            <div>
+              <h2 className="new-profile-card-title">Help Center</h2>
+              <p className="new-profile-card-subtitle">
+                Need assistance with your orders, paints, or consultation? We are here to help!
+              </p>
+
+              <div className="new-profile-inner-box" style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                <h3 style={{ margin: '0 0 10px', fontSize: '1.15rem', color: '#0F172A', fontWeight: 700 }}>Sri Thillai Traders Support</h3>
+                <p style={{ margin: '0 0 20px', color: '#475569', fontSize: '0.92rem', lineHeight: 1.6 }}>
+                  Our store experts are ready to guide you on paint quantities, color matching, and order tracking.
+                </p>
+                <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#0F172A', fontWeight: 600 }}>
+                    <Phone size={18} style={{ color: '#C89953' }} />
+                    <span>+91 98946 62020</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#0F172A', fontWeight: 600 }}>
+                    <Mail size={18} style={{ color: '#C89953' }} />
+                    <span>support@srithillaitraders.com</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </main>
       </div>
-
     </div>
   );
 };
